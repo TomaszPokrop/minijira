@@ -4,10 +4,12 @@ import com.snt.minijira.model.Ticket;
 import com.snt.minijira.model.User;
 import com.snt.minijira.repository.UserRepository;
 import com.snt.minijira.service.TicketService;
+import org.aspectj.weaver.ast.Instanceof;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @RestController
@@ -49,9 +51,12 @@ public class TicketController {
         return new ResponseEntity<>(updatedTicket, HttpStatus.OK);
     }
 
-    @PutMapping("/delete/{id}")
+
+
+    @PostMapping("/delete/{id}")
     public ResponseEntity<?> deleteTicket(@PathVariable("id") Long id) {
         ticketService.deleteTicket(id);
+        System.out.println("usunieto");
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
