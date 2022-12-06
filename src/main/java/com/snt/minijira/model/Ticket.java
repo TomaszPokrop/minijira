@@ -28,8 +28,8 @@ public class Ticket implements Serializable {
     private TimeConsuming timeConsuming;
     @Enumerated
     private Difficulty difficulty;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+
+    @ManyToOne
     private User user;
 
     public Ticket() {
