@@ -36,8 +36,8 @@ public class TicketService {
     }
 
     public void deleteTicket(Long id) {
-//        ticketRepo.deleteTicketById(id);
-        ticketRepo.deleteById(id);
+        ticketRepo.deleteTicketById(id);
+
     }
 
 }

@@ -23,20 +23,20 @@ public class TicketController {
         this.userRepository = userRepository;
     }
 
-    @GetMapping("/all")
+    @GetMapping
     public ResponseEntity<List<Ticket>> getAllTickets() {
         List<Ticket> tickets = ticketService.findAllTickets();
         return new ResponseEntity<>(tickets, HttpStatus.OK);
     }
 
-    @GetMapping("/find/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Ticket> getTicketById(@PathVariable("id") Long id) {
         Ticket ticket = ticketService.findTicketById(id);
         return new ResponseEntity<>(ticket, HttpStatus.OK);
     }
 
 
-    @PostMapping("/add")
+    @PostMapping
     public ResponseEntity<Ticket> addTicket(@RequestBody Ticket ticket) {
         User loggedUser = userRepository.findAll().stream().findFirst().get();
         ticket.setUser(loggedUser);
@@ -45,7 +45,7 @@ public class TicketController {
     }
 
 
-    @PutMapping("/update")
+    @PutMapping
     public ResponseEntity<Ticket> updateTicket(@RequestBody Ticket ticket) {
         Ticket updatedTicket = ticketService.updateTicket(ticket);
         return new ResponseEntity<>(updatedTicket, HttpStatus.OK);
@@ -53,10 +53,9 @@ public class TicketController {
 
 
 
-    @PostMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteTicket(@PathVariable("id") Long id) {
         ticketService.deleteTicket(id);
-        System.out.println("usunieto");
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
