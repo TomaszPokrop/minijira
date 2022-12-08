@@ -4,7 +4,6 @@ import com.snt.minijira.model.Ticket;
 import com.snt.minijira.model.User;
 import com.snt.minijira.repository.UserRepository;
 import com.snt.minijira.service.TicketService;
-import org.aspectj.weaver.ast.Instanceof;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +22,7 @@ public class TicketController {
         this.userRepository = userRepository;
     }
 
-    @GetMapping
+    @GetMapping("/users")
     public ResponseEntity<List<Ticket>> getAllTickets() {
         List<Ticket> tickets = ticketService.findAllTickets();
         return new ResponseEntity<>(tickets, HttpStatus.OK);
