@@ -7,8 +7,6 @@ import com.snt.minijira.service.TicketService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.transaction.Transactional;
 import java.util.List;
 
 @RestController
@@ -22,7 +20,7 @@ public class TicketController {
         this.userRepository = userRepository;
     }
 
-    @GetMapping("/users")
+    @GetMapping
     public ResponseEntity<List<Ticket>> getAllTickets() {
         List<Ticket> tickets = ticketService.findAllTickets();
         return new ResponseEntity<>(tickets, HttpStatus.OK);
