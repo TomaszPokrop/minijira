@@ -21,19 +21,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @RequestMapping("/login")
-    public boolean login(@RequestBody User user) {
-        return user.getName().equals("user") && user.getPassword().equals("password");
-    }
 
-    @RequestMapping("/user")
-    public Principal user(HttpServletRequest request) {
-        String authToken = request.getHeader("Authorization")
-                .substring("Basic".length()).trim();
-        return () -> new String(Base64.getDecoder()
-                .decode(authToken)).split(":")[0];
-
-    }
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userService.findAllUsers();

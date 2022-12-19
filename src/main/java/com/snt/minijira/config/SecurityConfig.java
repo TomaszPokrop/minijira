@@ -1,46 +1,84 @@
 package com.snt.minijira.config;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import javax.annotation.Resource;
 import java.util.Arrays;
 
-@EnableWebSecurity
-public class SecurityConfig{
+import static org.springframework.http.HttpMethod.*;
 
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.cors().and().csrf()
-                .and()
-                .formLogin().loginPage("/login")
+                .disable()
+                .authorizeRequests()
+                .antMatchers(GET,"/ticket/**")
+                .permitAll()
                 .and()
                 .authorizeRequests()
                 .anyRequest()
-                .permitAll()
+                .hasAnyRole("USER","ADMIN")
                 .and()
-                .httpBasic()
-                .and()
-                .logout()
-                .and()
+                .httpBasic(Customizer.withDefaults())
                 .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
 
         return http.build();
+////                .antMatchers("/anonymous*")
+////                .anonymous()
+//                .antMatchers(HttpMethod.OPTIONS, "/**")
+//                .permitAll()
+//                .anyRequest()
+//                .authenticated()
+//                .and()
+//                .formLogin().loginPage("/login")
+//                .defaultSuccessUrl("/", true)
+//                .and()
+//                .logout()
+//                .logoutUrl("/")
+//                .invalidateHttpSession(true)
+//                .deleteCookies("JSESSIONID")
+//                .and()
+//
+////                .and()
+////                .logout()
+////                .and()
+////                .sessionManagement()
+////                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+//
+//
+    }
+
+    @Bean
+    public InMemoryUserDetailsManager userDetailsService() {
+        UserDetails user = User.withUsername("user")
+                .password(passwordEncoder().encode("password"))
+                .roles("USER")
+                .build();
+        UserDetails admin = User.withUsername("admin")
+                .password(passwordEncoder().encode("password"))
+                .roles("ADMIN","USER")
+                .build();
+        return new InMemoryUserDetailsManager(user, admin);
     }
 
     @Bean

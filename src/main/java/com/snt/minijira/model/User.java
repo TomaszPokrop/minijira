@@ -20,14 +20,6 @@ public class User {
     public User() {
     }
 
-    public User(Long id, String name, String password) {
-        this.id = id;
-        this.name = name;
-        this.password = password;
-
-
-    }
-
     public Long getId() {
         return id;
     }
@@ -52,5 +44,18 @@ public class User {
         this.password = password;
     }
 
+    public List<Ticket> getTicketList() {
+        return ticketList;
+    }
 
+    public void setTicketList(List<Ticket> ticketList) {
+        this.ticketList = ticketList;
+    }
+
+    public User(Long id, String name, String password, List<Ticket> ticketList) {
+        this.id = id;
+        this.name = name;
+        this.password = password;
+        this.ticketList = ticketList;
+    }
 }
