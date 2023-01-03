@@ -1,9 +1,7 @@
 package com.snt.minijira.config;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -20,8 +18,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 
-import static org.springframework.http.HttpMethod.*;
-
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
@@ -31,12 +27,13 @@ public class SecurityConfig {
         http.cors().and().csrf()
                 .disable()
                 .authorizeRequests()
-                .antMatchers(GET,"/ticket/**")
-                .permitAll()
-                .and()
-                .authorizeRequests()
+//                .antMatchers(GET,"/ticket/**")
+//                 .permitAll()
+//                .and()
+//                .authorizeRequests()
                 .anyRequest()
-                .hasAnyRole("USER","ADMIN")
+                .permitAll()
+//                .hasAnyRole("USER","ADMIN")
                 .and()
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement()
@@ -76,7 +73,7 @@ public class SecurityConfig {
                 .build();
         UserDetails admin = User.withUsername("admin")
                 .password(passwordEncoder().encode("password"))
-                .roles("ADMIN","USER")
+                .roles("ADMIN", "USER")
                 .build();
         return new InMemoryUserDetailsManager(user, admin);
     }

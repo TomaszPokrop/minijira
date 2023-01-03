@@ -19,7 +19,7 @@ class UserServiceTest {
     void shouldAddUser() {
 //        given
         UserService userService = mock(UserService.class);
-        given(userService.addUser(Mockito.any(User.class))).willReturn(new User(1L, "user1", "user2"));
+        given(userService.addUser(Mockito.any(User.class))).willReturn(new User(1L, "user1", "user2", null));
 //        when
         User user = userService.addUser(new User());
 //        then
@@ -54,8 +54,8 @@ class UserServiceTest {
 
     private List<User> prepareMockData() {
         List<User> users = new ArrayList<>();
-        users.add(new User(1L, "user1", "user2"));
-        users.add(new User(2L, "user2", "user2"));
+        users.add(new User(1L, "user1", "user2", null));
+        users.add(new User(2L, "user2", "user2", null));
         return users;
     }
 }
