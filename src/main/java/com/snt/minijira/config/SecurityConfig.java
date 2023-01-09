@@ -32,20 +32,25 @@ import static org.springframework.http.HttpMethod.GET;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
+    final private MyUserDetailsService myUserDetailsService;
+
+    public SecurityConfig(MyUserDetailsService myUserDetailsService) {
+        this.myUserDetailsService = myUserDetailsService;
+    }
 
     @Bean
-    public DaoAuthenticationProvider authenticationProvider(MyUserDetailsService userDetailsService) {
+    public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService);
+        authProvider.setUserDetailsService(this.myUserDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
 
         return authProvider;
     }
 
     @Bean
-    public AuthenticationManager authenticationManagerBean(HttpSecurity http, MyUserDetailsService userDetailsService) throws Exception {
+    public AuthenticationManager authenticationManagerBean(HttpSecurity http) throws Exception {
         AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.authenticationProvider(authenticationProvider(userDetailsService));
+        authenticationManagerBuilder.authenticationProvider(authenticationProvider());
         return authenticationManagerBuilder.build();
     }
 
@@ -54,12 +59,6 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable();
         http
-                .formLogin()
-                .loginPage("/login")
-                .successHandler(successHandler())
-                .failureHandler(failureHandler())
-                .permitAll()
-                .and()
                 .authorizeRequests()
                 .antMatchers("/login")
                 .permitAll()
@@ -68,9 +67,17 @@ public class SecurityConfig {
                 .anyRequest()
                 .authenticated()
                 .and()
+                .formLogin()
+                .usernameParameter("username")
+                .passwordParameter("password")
+                .successHandler(successHandler())
+                .failureHandler(failureHandler())
+                .permitAll()
+                .and()
                 .logout().deleteCookies("JSESSIONID")
                 .permitAll()
                 .and()
+                .authenticationProvider(authenticationProvider())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.ALWAYS);

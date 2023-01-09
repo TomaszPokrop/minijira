@@ -28,4 +28,5 @@ public class MyUserDetailsService implements UserDetailsService {
         }
         return new MyUserDetails(user.getName(), user.getPassword());
     }
-}
+
+    }

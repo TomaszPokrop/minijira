@@ -24,13 +24,13 @@ public class TicketController {
     @GetMapping
     public ResponseEntity<List<Ticket>> getAllTickets() {
         List<Ticket> tickets = ticketService.findAllTickets();
-        return new ResponseEntity<>(tickets, HttpStatus.OK);
+        return ResponseEntity.ok(tickets);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Ticket> getTicketById(@PathVariable("id") Long id) {
         Ticket ticket = ticketService.findTicketById(id);
-        return new ResponseEntity<>(ticket, HttpStatus.OK);
+        return ResponseEntity.ok(ticket);
     }
 
 
@@ -46,14 +46,13 @@ public class TicketController {
     @PutMapping
     public ResponseEntity<Ticket> updateTicket(@RequestBody Ticket ticket) {
         Ticket updatedTicket = ticketService.updateTicket(ticket);
-        return new ResponseEntity<>(updatedTicket, HttpStatus.OK);
+        return ResponseEntity.ok(updatedTicket);
     }
-
 
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteTicket(@PathVariable("id") Long id) {
         ticketService.deleteTicket(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 }
