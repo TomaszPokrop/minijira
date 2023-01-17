@@ -11,10 +11,6 @@ public class LoginController {
     private IAuthenticationFacade authenticationFacade;
 
 
-    @PostMapping("/login")
-    public String login() {
-        return "login";
-    }
 
     @RequestMapping(value = "/username", method = RequestMethod.GET)
     @ResponseBody

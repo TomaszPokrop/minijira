@@ -1,8 +1,6 @@
 package com.snt.minijira.controller;
 
 import com.snt.minijira.model.Ticket;
-import com.snt.minijira.model.User;
-import com.snt.minijira.repository.UserRepository;
 import com.snt.minijira.service.TicketService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,11 +12,10 @@ import java.util.List;
 @RequestMapping("/ticket")
 public class TicketController {
     private final TicketService ticketService;
-    private final UserRepository userRepository;
 
-    public TicketController(TicketService ticketService, UserRepository userRepository) {
+
+    public TicketController(TicketService ticketService) {
         this.ticketService = ticketService;
-        this.userRepository = userRepository;
     }
 
     @GetMapping
@@ -36,8 +33,6 @@ public class TicketController {
 
     @PostMapping
     public ResponseEntity<Ticket> addTicket(@RequestBody Ticket ticket) {
-        User loggedUser = userRepository.findAll().stream().findFirst().get();
-        ticket.setUser(loggedUser);
         Ticket newTicket = ticketService.addTicket(ticket);
         return new ResponseEntity<>(newTicket, HttpStatus.CREATED);
     }

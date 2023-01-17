@@ -1,6 +1,7 @@
 package com.snt.minijira.config;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
@@ -13,9 +14,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -56,20 +60,26 @@ public class SecurityConfig {
 
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManagerBean) throws Exception {
+        CustomFilter customFilter = new CustomFilter();
+        customFilter.setAuthenticationManager(authenticationManagerBean);
+        customFilter.setAuthenticationSuccessHandler(successHandler());
+        customFilter.setAuthenticationFailureHandler(failureHandler());
+
         http.cors().and().csrf().disable();
         http
+                .addFilterAt(customFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
-                .antMatchers("/login")
-                .permitAll()
-                .antMatchers(GET, "/ticket/**")
-                .permitAll()
+//                .antMatchers("/login")
+//                .permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
                 .formLogin()
+                .loginPage("/login")
                 .usernameParameter("username")
                 .passwordParameter("password")
+                .defaultSuccessUrl("/")
                 .successHandler(successHandler())
                 .failureHandler(failureHandler())
                 .permitAll()
@@ -78,7 +88,10 @@ public class SecurityConfig {
                 .permitAll()
                 .and()
                 .authenticationProvider(authenticationProvider())
-                .httpBasic(Customizer.withDefaults())
+                .exceptionHandling()
+                .accessDeniedHandler((request, response, accessDeniedException) -> response.setStatus(403))
+                .authenticationEntryPoint((request, response, authException) -> response.setStatus(401))
+                .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
 

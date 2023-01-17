@@ -23,13 +23,13 @@ public class Ticket implements Serializable {
     private String epicLink;
 
     private String component;
-    private String assignedUser;
     @Enumerated
     private TimeConsuming timeConsuming;
     @Enumerated
     private Difficulty difficulty;
 
     @ManyToOne
+    @JoinColumn(name = "assigned_user")
     private User user;
 
     public Ticket() {
@@ -39,14 +39,13 @@ public class Ticket implements Serializable {
         this.id = id;
     }
 
-    public Ticket(Long id, String number, String description, String status, String epicLink, String component, String assignedUser, TimeConsuming timeConsuming, Difficulty difficulty) {
+    public Ticket(Long id, String number, String description, String status, String epicLink, String component, TimeConsuming timeConsuming, Difficulty difficulty) {
         this.id = id;
         this.number = number;
         this.description = description;
         this.status = status;
         this.epicLink = epicLink;
         this.component = component;
-        this.assignedUser = assignedUser;
         this.timeConsuming = timeConsuming;
         this.difficulty = difficulty;
     }
@@ -99,13 +98,7 @@ public class Ticket implements Serializable {
         this.component = component;
     }
 
-    public String getAssignedUser() {
-        return assignedUser;
-    }
 
-    public void setAssignedUser(String assignedUser) {
-        this.assignedUser = assignedUser;
-    }
 
     public TimeConsuming getTimeConsuming() {
         return timeConsuming;
@@ -140,7 +133,6 @@ public class Ticket implements Serializable {
                 ", status='" + status + '\'' +
                 ", epicLink='" + epicLink + '\'' +
                 ", component='" + component + '\'' +
-                ", assignedUser='" + assignedUser + '\'' +
                 ", timeConsuming=" + timeConsuming +
                 ", difficulty=" + difficulty +
                 ", user=" + user +

@@ -14,8 +14,6 @@ public class User {
     private Long id;
     private String name;
     private String password;
-    @OneToMany
-    private List<Ticket> ticketList = new ArrayList<>();
 
     public User() {
     }
@@ -44,18 +42,10 @@ public class User {
         this.password = password;
     }
 
-    public List<Ticket> getTicketList() {
-        return ticketList;
-    }
-
-    public void setTicketList(List<Ticket> ticketList) {
-        this.ticketList = ticketList;
-    }
-
     public User(Long id, String name, String password, List<Ticket> ticketList) {
         this.id = id;
         this.name = name;
         this.password = password;
-        this.ticketList = ticketList;
+
     }
 }
