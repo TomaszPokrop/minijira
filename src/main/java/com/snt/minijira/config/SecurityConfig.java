@@ -66,14 +66,16 @@ public class SecurityConfig {
         customFilter.setAuthenticationSuccessHandler(successHandler());
         customFilter.setAuthenticationFailureHandler(failureHandler());
 
-        http.cors().and().csrf().disable();
+        http.cors().disable();
+        http.csrf().disable();
         http
-                .addFilterAt(customFilter, UsernamePasswordAuthenticationFilter.class)
+//                .addFilterAt(customFilter, UsernamePasswordAuthenticationFilter.class)
+//                .addFilterBefore(new CORSFilter(), CustomFilter.class)
                 .authorizeRequests()
-//                .antMatchers("/login")
+//                .antMatchers("/ticket")
 //                .permitAll()
                 .anyRequest()
-                .authenticated()
+                .permitAll()
                 .and()
                 .formLogin()
                 .loginPage("/login")
@@ -104,7 +106,7 @@ public class SecurityConfig {
             public void onAuthenticationSuccess(HttpServletRequest httpServletRequest,
                                                 HttpServletResponse httpServletResponse, Authentication authentication)
                     throws IOException, ServletException {
-                httpServletResponse.getWriter().append("OK");
+                httpServletResponse.setContentType("application/json");
                 httpServletResponse.setStatus(200);
             }
         };
@@ -116,7 +118,7 @@ public class SecurityConfig {
             public void onAuthenticationFailure(HttpServletRequest httpServletRequest,
                                                 HttpServletResponse httpServletResponse, AuthenticationException e)
                     throws IOException, ServletException {
-                httpServletResponse.getWriter().append("Authentication failure");
+//                httpServletResponse.getWriter().append("Authentication failure");
                 httpServletResponse.setStatus(401);
             }
         };

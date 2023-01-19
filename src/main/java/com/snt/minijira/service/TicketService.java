@@ -29,7 +29,6 @@ public class TicketService {
 
     public Ticket addTicket(Ticket ticket) {
         ticket.setUser(userService.getLoggedUser());
-//        ticket.setUser(userService.findUserById());
         return ticketRepo.save(ticket);
     }
 
